@@ -150,7 +150,7 @@ function evaluateGoal(state: PlayerState): PlayerState {
 
   if (!achieved) return state;
 
-  let next = {
+  const next = {
     ...state,
     currentGoal: { ...goal, completed: true },
     goalJustCompleted: true,
@@ -185,9 +185,10 @@ function evaluateGoal(state: PlayerState): PlayerState {
 }
 
 function applyActionStreak(state: PlayerState, action: PlayerAction) {
-  const nextStreak = state.streak.lastAction === action
-    ? { lastAction: action, count: state.streak.count + 1 }
-    : { lastAction: action, count: 1 };
+  const nextStreak =
+    state.streak.lastAction === action
+      ? { lastAction: action, count: state.streak.count + 1 }
+      : { lastAction: action, count: 1 };
 
   const nextCounts = {
     ...state.actionCounts,
@@ -236,7 +237,6 @@ function applyActionStreak(state: PlayerState, action: PlayerAction) {
   };
 }
 
-
 export function getActionSummaryTitle(action: PlayerAction) {
   switch (action) {
     case "eatSimple":
@@ -250,11 +250,15 @@ export function getActionSummaryTitle(action: PlayerAction) {
   }
 }
 
-export function getActionSummaryDetail(action: PlayerAction, next: PlayerState) {
+export function getActionSummaryDetail(
+  action: PlayerAction,
+  next: PlayerState,
+) {
   const maybeEventText = next.currentEvent
     ? ` 이후 이벤트 '${next.currentEvent.title}'가 발생했다.`
     : "";
-  const nextDayText = next.day > 30 ? "월급날에 도착했다." : `${next.day}일차로 넘어갔다.`;
+  const nextDayText =
+    next.day > 30 ? "월급날에 도착했다." : `${next.day}일차로 넘어갔다.`;
 
   switch (action) {
     case "eatSimple":
@@ -269,7 +273,8 @@ export function getActionSummaryDetail(action: PlayerAction, next: PlayerState) 
 }
 
 export function getEventChoiceSummary(choice: EventChoice, next: PlayerState) {
-  const nextDayText = next.day > 30 ? "월급날에 도착했다." : `${next.day}일차로 넘어갔다.`;
+  const nextDayText =
+    next.day > 30 ? "월급날에 도착했다." : `${next.day}일차로 넘어갔다.`;
   return `${choice.label} 선택을 반영했다. ${nextDayText}`;
 }
 
@@ -393,7 +398,10 @@ export function getActionPreview(state: PlayerState) {
   const staminaUp = getUpgradeLevel(state, "staminaUp");
 
   return {
-    eatSimpleCost: Math.max(2000, state.dailyFoodBase - 2000 - frugalMeal * 800),
+    eatSimpleCost: Math.max(
+      2000,
+      state.dailyFoodBase - 2000 - frugalMeal * 800,
+    ),
     deliveryCost: Math.max(7000, 20000 - selfControl * 1200),
     sideJobIncome: 40000 + sideJobBoost * 9000,
     restHealthGain: 6 + staminaUp * 2,
@@ -411,28 +419,43 @@ export function applyPlayerAction(
     case "eatSimple":
       next.money -= preview.eatSimpleCost;
       next.stress += 1;
-      next.satisfaction -= Math.max(0, 1 - getUpgradeLevel(state, "frugalMeal"));
-      next.logs = [...state.logs, { day: state.day, message: "안전 루틴으로 지출을 최대한 눌렀다." }];
+      next.satisfaction -= Math.max(
+        0,
+        1 - getUpgradeLevel(state, "frugalMeal"),
+      );
+      next.logs = [
+        ...state.logs,
+        { day: state.day, message: "안전 루틴으로 지출을 최대한 눌렀다." },
+      ];
       break;
 
     case "delivery":
       next.money -= preview.deliveryCost;
       next.stress -= 4;
       next.satisfaction += 6;
-      next.logs = [...state.logs, { day: state.day, message: "소확행 소비로 기분을 끌어올렸다." }];
+      next.logs = [
+        ...state.logs,
+        { day: state.day, message: "소확행 소비로 기분을 끌어올렸다." },
+      ];
       break;
 
     case "sideJob":
       next.money += preview.sideJobIncome;
       next.stress += 6;
       next.health -= 5;
-      next.logs = [...state.logs, { day: state.day, message: "무리해서 한 번 더 벌었다." }];
+      next.logs = [
+        ...state.logs,
+        { day: state.day, message: "무리해서 한 번 더 벌었다." },
+      ];
       break;
 
     case "rest":
       next.stress -= 5;
       next.health += preview.restHealthGain;
-      next.logs = [...state.logs, { day: state.day, message: "오늘은 회복 턴으로 버텼다." }];
+      next.logs = [
+        ...state.logs,
+        { day: state.day, message: "오늘은 회복 턴으로 버텼다." },
+      ];
       break;
   }
 
@@ -474,7 +497,10 @@ export function applyDailyBaseCost(state: PlayerState): PlayerState {
   const transportPass = getUpgradeLevel(state, "transportPass");
   const budgetHabit = getUpgradeLevel(state, "budgetHabit");
 
-  const transportCost = Math.max(500, state.dailyTransportBase - transportPass * 700);
+  const transportCost = Math.max(
+    500,
+    state.dailyTransportBase - transportPass * 700,
+  );
   const dailyLifeCost = state.day % 7 !== 0 ? 5000 : 0;
 
   next.money -= transportCost + dailyLifeCost;
@@ -512,7 +538,8 @@ export function maybePickRandomEvent(state: PlayerState): GameEvent | null {
   const available = GAME_EVENTS.filter((event) => {
     if (event.minDay && state.day < event.minDay) return false;
     if (event.maxDay && state.day > event.maxDay) return false;
-    if (event.jobs && state.job && !event.jobs.includes(state.job)) return false;
+    if (event.jobs && state.job && !event.jobs.includes(state.job))
+      return false;
     if (recentSeenIds.includes(event.id)) return false;
     return true;
   });
@@ -520,7 +547,8 @@ export function maybePickRandomEvent(state: PlayerState): GameEvent | null {
   const fallback = GAME_EVENTS.filter((event) => {
     if (event.minDay && state.day < event.minDay) return false;
     if (event.maxDay && state.day > event.maxDay) return false;
-    if (event.jobs && state.job && !event.jobs.includes(state.job)) return false;
+    if (event.jobs && state.job && !event.jobs.includes(state.job))
+      return false;
     return true;
   });
 
@@ -577,15 +605,22 @@ export function applyEventChoice(
     satisfaction: clamp(state.satisfaction + satisfactionDelta, 0, 100),
     health: clamp(state.health + healthDelta, 0, 100),
     currentEvent: null,
-    seenEventIds: [...state.seenEventIds.slice(-19), state.currentEvent?.id ?? "unknown"],
+    seenEventIds: [
+      ...state.seenEventIds.slice(-19),
+      state.currentEvent?.id ?? "unknown",
+    ],
     logs: [
       ...state.logs,
       {
         day: state.day,
         message: `${state.currentEvent?.title ?? "이벤트"} → ${choice.label} (${[
           moneyDelta !== 0 ? `돈 ${formatSignedValue(moneyDelta, "원")}` : null,
-          stressDelta !== 0 ? `스트레스 ${formatSignedValue(stressDelta)}` : null,
-          satisfactionDelta !== 0 ? `만족도 ${formatSignedValue(satisfactionDelta)}` : null,
+          stressDelta !== 0
+            ? `스트레스 ${formatSignedValue(stressDelta)}`
+            : null,
+          satisfactionDelta !== 0
+            ? `만족도 ${formatSignedValue(satisfactionDelta)}`
+            : null,
           healthDelta !== 0 ? `체력 ${formatSignedValue(healthDelta)}` : null,
         ]
           .filter(Boolean)
@@ -639,7 +674,8 @@ export function createResult(
   state: PlayerState,
   survived: boolean,
 ): GameResult {
-  const upgradeBonus = Object.values(state.upgrades).reduce((sum, cur) => sum + cur, 0) * 300;
+  const upgradeBonus =
+    Object.values(state.upgrades).reduce((sum, cur) => sum + cur, 0) * 300;
 
   const score =
     state.money / 1000 +
@@ -691,7 +727,8 @@ export function buyUpgrade(
 
   if (currentLevel >= maxLevel) return state;
 
-  const levelCost = upgrade.cost + currentLevel * Math.round(upgrade.cost * 0.4);
+  const levelCost =
+    upgrade.cost + currentLevel * Math.round(upgrade.cost * 0.4);
   if (state.money < levelCost) return state;
 
   const next = {
