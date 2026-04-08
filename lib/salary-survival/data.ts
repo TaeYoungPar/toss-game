@@ -256,6 +256,40 @@ export const GAME_EVENTS: GameEvent[] = [
     description: "뜻밖의 절약이다.",
     choices: [{ id: "nice", label: "감사히 먹는다", effect: { money: 12000, satisfaction: 3 } }],
   },
+
+  {
+    id: "office_report_fix",
+    title: "팀장이 급한 보고서 수정을 요청했다",
+    description: "사무직다운 순간이다. 빠르게 처리하면 평판은 오른다.",
+    minDay: 4,
+    jobs: ["office"],
+    choices: [
+      { id: "handle", label: "야무지게 처리한다", effect: { money: 18000, stress: 5, satisfaction: 2 } },
+      { id: "delay", label: "내일로 미룬다", effect: { stress: 2, satisfaction: -2 } },
+    ],
+  },
+  {
+    id: "freelancer_client_revision",
+    title: "클라이언트가 수정 요청을 추가했다",
+    description: "수정 범위를 두고 밀당이 필요하다.",
+    minDay: 6,
+    jobs: ["freelancer"],
+    choices: [
+      { id: "accept", label: "추가 수정까지 받는다", effect: { money: 40000, stress: 7, health: -3 } },
+      { id: "negotiate", label: "추가 금액을 협의한다", effect: { money: 22000, stress: 2, satisfaction: 3 } },
+    ],
+  },
+  {
+    id: "parttime_shift_swap",
+    title: "동료가 근무 교대를 부탁한다",
+    description: "대신 들어가면 돈은 벌지만 몸은 힘들다.",
+    minDay: 3,
+    jobs: ["parttime"],
+    choices: [
+      { id: "cover", label: "대신 근무해준다", effect: { money: 30000, stress: 4, health: -4 } },
+      { id: "decline", label: "정중히 거절한다", effect: { satisfaction: 1, stress: -1 } },
+    ],
+  },
   {
     id: "subscription",
     title: "구독 서비스 결제일이다",

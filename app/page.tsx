@@ -6,10 +6,12 @@ import { JOBS, TRAITS } from "@/lib/salary-survival/data";
 import { JobType, TraitType } from "@/lib/salary-survival/types";
 import { useSalarySurvivalStore } from "@/store/useSalarySurvivalStore";
 import { JOB_LABEL_MAP, TRAIT_LABEL_MAP } from "@/lib/salary-survival/data";
+
 export default function HomePage() {
   const router = useRouter();
   const startGame = useSalarySurvivalStore((s) => s.startGame);
   const resetGame = useSalarySurvivalStore((s) => s.resetGame);
+  const bestRun = useSalarySurvivalStore((s) => s.bestRun);
 
   const [selectedJob, setSelectedJob] = useState<JobType>("office");
   const [selectedTrait, setSelectedTrait] = useState<TraitType>("planner");
@@ -33,13 +35,32 @@ export default function HomePage() {
             토스용 미니게임 MVP
           </div>
 
-          <h1 className="mt-4 text-3xl font-bold text-slate-900">
-            월급생존키우기
-          </h1>
+          <h1 className="mt-4 text-3xl font-bold text-slate-900">월급생존키우기</h1>
           <p className="mt-3 leading-7 text-slate-600">
-            월급을 받고 한 달을 버텨라. 소비, 부업, 휴식, 랜덤 이벤트를 잘
-            선택해서 월급날까지 살아남는 게임.
+            월급을 받고 한 달을 버텨라. 소비, 부업, 휴식, 랜덤 이벤트를 잘 선택해서
+            월급날까지 살아남는 게임.
           </p>
+
+          <div className="mt-6 grid gap-3 sm:grid-cols-3">
+            <div className="rounded-2xl bg-slate-100 p-4">
+              <div className="text-sm text-slate-500">최고 점수</div>
+              <div className="mt-1 text-2xl font-bold text-slate-900">
+                {bestRun.bestScore.toLocaleString()}
+              </div>
+            </div>
+            <div className="rounded-2xl bg-slate-100 p-4">
+              <div className="text-sm text-slate-500">최장 생존</div>
+              <div className="mt-1 text-2xl font-bold text-slate-900">
+                {bestRun.bestSurvivalDays}일
+              </div>
+            </div>
+            <div className="rounded-2xl bg-slate-100 p-4">
+              <div className="text-sm text-slate-500">플레이 횟수</div>
+              <div className="mt-1 text-2xl font-bold text-slate-900">
+                {bestRun.totalRuns}회
+              </div>
+            </div>
+          </div>
 
           <section className="mt-8">
             <h2 className="text-lg font-semibold text-slate-900">직업 선택</h2>
@@ -54,10 +75,14 @@ export default function HomePage() {
                       : "border-slate-200 bg-white text-slate-900"
                   }`}
                 >
-                  <div className="font-semibold">{job.label}</div>
-                  <div className="mt-1 text-sm opacity-80">{job.description}</div>
-                  <div className="mt-2 text-sm">
-                    월급: {job.monthlySalary.toLocaleString()}원
+                  <div className="flex items-center justify-between gap-3">
+                    <div>
+                      <div className="font-semibold">{job.label}</div>
+                      <div className="mt-1 text-sm opacity-80">{job.description}</div>
+                    </div>
+                    <div className="rounded-full bg-black/5 px-3 py-1 text-xs font-semibold text-current">
+                      월급 {job.monthlySalary.toLocaleString()}원
+                    </div>
                   </div>
                 </button>
               ))}
@@ -86,7 +111,10 @@ export default function HomePage() {
 
           <div className="mt-8 rounded-2xl bg-slate-100 p-4 text-sm text-slate-600">
             <div>직업: {JOB_LABEL_MAP[selectedJob]}</div>
-<div>특성: {TRAIT_LABEL_MAP[selectedTrait]}</div>
+            <div>특성: {TRAIT_LABEL_MAP[selectedTrait]}</div>
+            <div className="mt-2 text-slate-500">
+              시작 월급: {selectedJobInfo?.monthlySalary.toLocaleString()}원
+            </div>
           </div>
 
           <button
